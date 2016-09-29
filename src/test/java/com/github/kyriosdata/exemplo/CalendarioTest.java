@@ -52,7 +52,7 @@ public class CalendarioTest {
     
     @Test
     public void Teste10DiaSemanaValorMenorQueZero(){
-        assertEquals(-1, Calendario.diaSemana(20160928, 2016, 20160928, 0));
+        assertEquals(-1, Calendario.diaSemana(20160928, 2016, 20160928, -1));
     }
     
     @Test
@@ -73,6 +73,11 @@ public class CalendarioTest {
     @Test
     public void Teste14AceitacaoDia19950617(){
         assertEquals(5, Calendario.diaSemana(19950617, 2016, 20160928, 2));
+    }
+    
+    @Test
+    public void Teste15Dia31EmMesDe30(){
+        assertEquals(-1, Calendario.diaSemana(20160931, 2016, 20160928, 2));
     }
 }
 

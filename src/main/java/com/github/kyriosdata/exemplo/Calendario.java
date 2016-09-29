@@ -116,9 +116,6 @@ public class Calendario
                 }
             }
         }
-        if (dia <= 0){
-            valido = false;
-        }
         return valido;
     }
     
