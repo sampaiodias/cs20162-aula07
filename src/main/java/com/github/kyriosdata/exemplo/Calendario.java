@@ -13,7 +13,6 @@ public class Calendario
             ano = getAno(data);
             mes = getMes(data);
             dia = getDia(data);
-            diaDaSemana = ds;
             if (dataValida(ano, mes, dia, bissexto)){
                 if (data > conhecida){ //Data conhecida é passada
                     while (conhecida < data){
@@ -27,6 +26,7 @@ public class Calendario
                         ds = incrementarDiaSemana(ds);
                     }
                 }
+                diaDaSemana = ds;
             }
         }
         
@@ -116,7 +116,9 @@ public class Calendario
                 }
             }
         }
-        
+        if (dia <= 0){
+            valido = false;
+        }
         return valido;
     }
     
