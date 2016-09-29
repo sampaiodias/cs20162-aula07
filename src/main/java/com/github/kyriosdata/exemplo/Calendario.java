@@ -1,61 +1,77 @@
-/*
- * Copyright (c) 2016. Fábrica de Software - Instituto de Informática (UFG)
- * Creative Commons Attribution 4.0 International License.
- */
-
 package com.github.kyriosdata.exemplo;
 
-import java.time.LocalDate;
-
-/**
- * Implementação do cálculo de dia da semana.
- *
- * <p>Algoritmo correspondente obtido de
- * LARSEN, K. S. Computing the Day of the week,
- * Dr. Dobb´s Journal, april, 1995.
- *
- * <p>Convém ressaltar a existência da classe
- * {@link java.time.LocalDate} e, em particular,
- * do método {@link LocalDate#getDayOfWeek()},
- * que oferece funcionalidade similar.
- *
- */
 public class Calendario
 {
-    /**
-     * Obtém dia da semana para a data.
-     * @param d O dia da data. Valor entre 1 e 31, inclusive.
-     * @param m O mês da data. Valor entre 1 e 12, inclusive.
-     * @param a O ano da data. Valor maior que 1752.
-     *
-     * @return O dia da semana correspondente à data. O valor 0 para
-     * segunda-feira, 1 para terça-feira, 2 para quarta-feira e
-     * assim sucessivamente.
-     *
-     * @throws IllegalArgumentException Se o dia for inválido (menor que um
-     * ou maior que 31), o mês for inválido (menor que 1 ou maior que 12)
-     * ou o ano for menor que 1753.
-     */
-    public static int diaDaSemana(int d, int m, int a) {
-        if (d < 1 || d > 31) {
-            throw new IllegalArgumentException("dia inválido");
+    public static int diaSemana(int data, int bissexto, int conhecida, int ds) {
+        int diaDaSemana = -1;
+        int ano;
+        int mes;
+        int dia;
+        
+        if (dataFormatoValida(data) && dataFormatoValida(conhecida) 
+                && bissexto >= 0 && diaSemanaValido(ds)){ 
+            ano = getAno(data);
+            mes = getMes(data);
+            dia = getDia(data);
+            
         }
-
-        if (m < 1 || m > 12) {
-            throw new IllegalArgumentException("mês inválido");
+        
+        return diaDaSemana;
+    }
+    
+    private static int incrementarDiaSemana(int ds){
+        ds++;
+        
+        if (ds > 6){
+            ds = 0;
         }
-
-        if (a < 1753) {
-            throw new IllegalArgumentException("ano inválido");
+        
+        return ds;
+    }
+    
+    private static int decrementarDiaSemana(int ds){
+        ds--;
+        
+        if (ds < 0){
+            ds = 6;
         }
-
-        if (m == 1 || m == 2) {
-            m = m + 12;
-            a = a - 1;
+        
+        return ds;
+    }
+    
+    private static boolean dataFormatoValida(int data){
+        if (data > 9999999 && data < 100000000){ //Formato AAAAMMDD
+            return true;
         }
-
-        int s = d + 2 * m + 3 * (m + 1) / 5 + a + a / 4 - a / 100 + a / 400;
-
-        return s % 7;
+        else{
+            return false;
+        }        
+    }
+    
+    private static boolean diaSemanaValido(int dia){
+        if (dia >= 0 && dia <= 6){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    private static int getAno(int data){
+        String texto = "" + data;
+        String ano = texto.substring(0, 4);
+        return Integer.parseInt(ano);
+    }
+    
+    private static int getMes(int data){
+        String texto = "" + data;
+        String mes = texto.substring(4, 6);
+        return Integer.parseInt(mes);
+    }
+    
+    private static int getDia(int data){
+        String texto = "" + data;
+        String dia = texto.substring(6);
+        return Integer.parseInt(dia);
     }
 }
