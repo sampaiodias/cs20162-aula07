@@ -102,40 +102,72 @@ public final class Calendario {
     /**
      * Retorna um valor de 0 a 6 representando um dia da semana.
      *
-     * @param data Data alvo representada no formato AAAAMMDD
+     * @param dataAlvo Data alvo representada no formato AAAAMMDD
      * @param bissexto Valor maior que 0 se a data conhecida for bissexta
      * @param conhecida Data conhecida no formato AAAAMMDD
      * @param ds Dia da semana da data "Conhecida"
      *
      * @return resultado valor de 0 a 6 representando o dia da semana
      */
-    public static int diaSemana(final int data, final int bissexto,
+    public static int diaSemana(final int dataAlvo, final int bissexto,
             final int conhecida, final int ds) {
         int diaSemana = ds;
-        int dataConhecida = conhecida;
         int resultado = -1;
         int ano;
         int mes;
         int dia;
+        int diaConhecido;
+        int mesConhecido;
+        int anoConhecido;
+        boolean respostaEncontrada = false;
 
-        if (dataFormatoValida(data) && dataFormatoValida(conhecida)
+        if (dataFormatoValida(dataAlvo) && dataFormatoValida(conhecida)
                 && bissexto > 0 && diaSemanaValido(ds)) {
-            ano = getAno(data);
-            mes = getMes(data);
-            dia = getDia(data);
+            ano = getAno(dataAlvo);
+            mes = getMes(dataAlvo);
+            dia = getDia(dataAlvo);
+            anoConhecido = getAno(conhecida);
+            mesConhecido = getMes(conhecida);
+            diaConhecido = getDia(conhecida);
             if (dataValida(ano, mes, dia, bissexto)) {
-                if (data > conhecida) { //Data conhecida é passada
-                    while (dataConhecida < data) {
-                        dataConhecida++;
-                        diaSemana = incrementarDiaSemana(diaSemana);
+                if (dataAlvo > conhecida) { //Data conhecida é passada
+                    while (!respostaEncontrada) {
+                        if (dia == diaConhecido && mes == mesConhecido
+                                && ano == anoConhecido) {
+                            respostaEncontrada = true;
+                        } else {
+                            int diaConhecidoAux = diaConhecido;
+                            int mesConhecidoAux = mesConhecido;
+                            int anoConhecidoAux = anoConhecido;
+                            diaConhecido = incrementarDia(diaConhecidoAux,
+                                    mesConhecidoAux, anoConhecidoAux, bissexto);
+                            mesConhecido = incrementarMes(diaConhecidoAux,
+                                    mesConhecidoAux, anoConhecidoAux, bissexto);
+                            anoConhecido = incrementarAno(diaConhecidoAux,
+                                    mesConhecidoAux, anoConhecidoAux, bissexto);
+                            diaSemana = incrementarDiaSemana(diaSemana);
+                        }
                     }
                 } else {
-                    while (dataConhecida > data) {
-                        dataConhecida--;
-                        diaSemana = incrementarDiaSemana(diaSemana);
+                    while (!respostaEncontrada) {
+                        if (dia == diaConhecido && mes == mesConhecido
+                                && ano == anoConhecido) {
+                            respostaEncontrada = true;
+                        } else {
+                            int diaConhecidoAux = diaConhecido;
+                            int mesConhecidoAux = mesConhecido;
+                            int anoConhecidoAux = anoConhecido;
+                            diaConhecido = decrementarDia(diaConhecidoAux,
+                                    mesConhecidoAux, anoConhecidoAux, bissexto);
+                            mesConhecido = decrementarMes(diaConhecidoAux,
+                                    mesConhecidoAux, anoConhecidoAux, bissexto);
+                            anoConhecido = decrementarAno(diaConhecidoAux,
+                                    mesConhecidoAux, anoConhecidoAux, bissexto);
+                            diaSemana = decrementarDiaSemana(diaSemana);
+                        }
                     }
                 }
-                resultado = ds;
+                resultado = diaSemana;
             }
         }
 
@@ -157,6 +189,170 @@ public final class Calendario {
         }
 
         return ds;
+    }
+
+    /**
+     * Encontra o valor numérico do dia seguinte.
+     *
+     * @param dia dia atual
+     * @param mes mes atual
+     * @param ano ano atual
+     * @param bissexto um ano que é conhecidamente bissexto
+     * @return novo valor de dia.
+     */
+    private static int incrementarDia(final int dia, final int mes,
+            final int ano, final int bissexto) {
+        int hoje = dia;
+        hoje++;
+        if (hoje > DIAS_FEV) {
+            if (mes == COD_FEVEREIRO) {
+                System.out.println("aaaa");
+                if (!verificarBissexto(ano, bissexto)) { //Dia 29 em ano normal
+                    hoje = 1;
+                } else if (hoje > DIAS_FEV_BISSEXTO) {
+                    hoje = 1;
+                }
+            } else if (mes == COD_JANEIRO || mes == COD_MARCO
+                    || mes == COD_MAIO || mes == COD_JULHO
+                    || mes == COD_AGOSTO || mes == COD_OUTUBRO
+                    || mes == COD_DEZEMBRO) {
+                if (dia > DIAS_MES31) {
+                    hoje = 1;
+                }
+            } else if (dia > DIAS_MES30) {
+                hoje = 1;
+            }
+        }
+        return hoje;
+    }
+
+    /**
+     * Encontra o valor numérico do dia anterior.
+     *
+     * @param dia dia atual
+     * @param mes mes atual
+     * @param ano ano atual
+     * @param bissexto um ano que é conhecidamente bissexto
+     * @return novo valor de dia.
+     */
+    private static int decrementarDia(final int dia, final int mes,
+            final int ano, final int bissexto) {
+        int hoje = dia;
+        int mesAtual = mes;
+        hoje--;
+        if (hoje < 1) {
+            mesAtual = decrementarMes(hoje, mes, ano, bissexto);
+            if (mesAtual == COD_FEVEREIRO) {
+                if (!verificarBissexto(ano, bissexto)) { //Dia 29 em ano normal
+                    hoje = DIAS_FEV;
+                } else {
+                    hoje = DIAS_FEV_BISSEXTO;
+                }
+            } else if (mesAtual == COD_JANEIRO || mesAtual == COD_MARCO
+                    || mesAtual == COD_MAIO || mesAtual == COD_JULHO
+                    || mesAtual == COD_AGOSTO || mesAtual == COD_OUTUBRO
+                    || mesAtual == COD_DEZEMBRO) {
+                hoje = DIAS_MES31;
+            } else {
+                hoje = DIAS_MES30;
+            }
+        }
+        return hoje;
+    }
+
+    /**
+     * Encontra o valor numérico do mês anterior.
+     *
+     * @param dia dia atual
+     * @param mes mes atual
+     * @param ano ano atual
+     * @param bissexto um ano que é conhecidamente bissexto
+     * @return novo valor de mês
+     */
+    private static int decrementarMes(final int dia, final int mes,
+            final int ano, final int bissexto) {
+        int hoje = dia;
+        int mesAtual = mes;
+        hoje--;
+        if (hoje < 1) {
+            mesAtual--;
+        }
+        if (mesAtual < 1) {
+            mesAtual = COD_DEZEMBRO;
+        }
+        return mesAtual;
+    }
+
+    /**
+     * Encontra o valor numérico do mês de amanhã.
+     *
+     * @param dia dia atual
+     * @param mes mes atual
+     * @param ano ano atual
+     * @param bissexto um ano que é conhecidamente bissexto
+     * @return novo valor de mês
+     */
+    private static int incrementarMes(final int dia, final int mes,
+            final int ano, final int bissexto) {
+        int mesAtual = mes;
+        int hoje = dia;
+        hoje++;
+        if (hoje > DIAS_FEV) {
+            if (mesAtual == COD_FEVEREIRO) {
+                if (!verificarBissexto(ano, bissexto)) { //Dia 29 em ano normal
+                    mesAtual++;
+                } else if (hoje > DIAS_FEV_BISSEXTO) {
+                    mesAtual++;
+                }
+            } else if (mesAtual == COD_JANEIRO || mesAtual == COD_MARCO
+                    || mesAtual == COD_MAIO || mesAtual == COD_JULHO
+                    || mesAtual == COD_AGOSTO || mesAtual == COD_OUTUBRO
+                    || mesAtual == COD_DEZEMBRO) {
+                if (hoje > DIAS_MES31) {
+                    mesAtual++;
+                }
+            } else if (hoje > DIAS_MES30) {
+                mesAtual++;
+            }
+        }
+        if (mesAtual > COD_DEZEMBRO) {
+            mesAtual = COD_JANEIRO;
+        }
+        return mesAtual;
+    }
+
+    /**
+     * Encontra o valor numérico de ano para amanhã.
+     *
+     * @param dia dia atual
+     * @param mes mes atual
+     * @param ano ano atual
+     * @param bissexto um ano que é conhecidamente bissexto
+     * @return novo valor de ano
+     */
+    private static int incrementarAno(final int dia, final int mes,
+            final int ano, final int bissexto) {
+        if (dia >= DIAS_MES31 && mes == COD_DEZEMBRO) {
+            return ano + 1;
+        }
+        return ano;
+    }
+
+    /**
+     * Encontra o valor numérico de ano para amanhã.
+     *
+     * @param dia dia atual
+     * @param mes mes atual
+     * @param ano ano atual
+     * @param bissexto um ano que é conhecidamente bissexto
+     * @return novo valor de ano
+     */
+    private static int decrementarAno(final int dia, final int mes,
+            final int ano, final int bissexto) {
+        if (dia <= 1 && mes == COD_JANEIRO) {
+            return ano - 1;
+        }
+        return ano;
     }
 
     /**
