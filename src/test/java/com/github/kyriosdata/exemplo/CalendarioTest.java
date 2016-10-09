@@ -68,7 +68,7 @@ public class CalendarioTest {
 
     @Test
     public void Teste13AceitacaoDia20161231() {
-        assertEquals(5, Calendario.diaSemana(20161231, 2016, 20161008, 6));
+        assertEquals(5, Calendario.diaSemana(20161231, 2016, 20161008, 5));
     }
 
     @Test
@@ -93,11 +93,16 @@ public class CalendarioTest {
     
     @Test
     public void Teste18Aceitacao20200301() {
-        assertEquals(4, Calendario.diaSemana(20200301, 2016, 20161008, 5));
+        assertEquals(6, Calendario.diaSemana(20200301, 2016, 20161008, 5));
     }
     
     @Test
-    public void Teste18Aceitacao20200201() {
-        assertEquals(3, Calendario.diaSemana(20200201, 2016, 20161008, 5));
+    public void Teste19Aceitacao20200201() {
+        assertEquals(5, Calendario.diaSemana(20200201, 2016, 20161008, 5));
+    }
+    
+    @Test
+    public void Teste20AceitacaoFevNormal() {
+        assertEquals(6, Calendario.diaSemana(20170205, 2016, 20161008, 5));
     }
 }

@@ -129,7 +129,9 @@ public final class Calendario {
             anoConhecido = getAno(conhecida);
             mesConhecido = getMes(conhecida);
             diaConhecido = getDia(conhecida);
-            if (dataValida(ano, mes, dia, bissexto)) {
+            if (dataValida(ano, mes, dia, bissexto)
+                    && dataValida(anoConhecido, mesConhecido,
+                            diaConhecido, bissexto)) {
                 if (dataAlvo > conhecida) { //Data conhecida é passada
                     while (!respostaEncontrada) {
                         if (dia == diaConhecido && mes == mesConhecido
@@ -206,7 +208,6 @@ public final class Calendario {
         hoje++;
         if (hoje > DIAS_FEV) {
             if (mes == COD_FEVEREIRO) {
-                System.out.println("aaaa");
                 if (!verificarBissexto(ano, bissexto)) { //Dia 29 em ano normal
                     hoje = 1;
                 } else if (hoje > DIAS_FEV_BISSEXTO) {
@@ -216,10 +217,10 @@ public final class Calendario {
                     || mes == COD_MAIO || mes == COD_JULHO
                     || mes == COD_AGOSTO || mes == COD_OUTUBRO
                     || mes == COD_DEZEMBRO) {
-                if (dia > DIAS_MES31) {
+                if (hoje > DIAS_MES31) {
                     hoje = 1;
                 }
-            } else if (dia > DIAS_MES30) {
+            } else if (hoje > DIAS_MES30) {
                 hoje = 1;
             }
         }
@@ -332,7 +333,7 @@ public final class Calendario {
      */
     private static int incrementarAno(final int dia, final int mes,
             final int ano, final int bissexto) {
-        if (dia >= DIAS_MES31 && mes == COD_DEZEMBRO) {
+        if (dia == DIAS_MES31 && mes == COD_DEZEMBRO) {
             return ano + 1;
         }
         return ano;
@@ -458,10 +459,9 @@ public final class Calendario {
                 } else if (diaAtual <= DIAS_FEV) {
                     valido = true;
                 }
-            } else { //Meses com 30 dias
-                if (diaAtual <= DIAS_MES30) {
-                    valido = true;
-                }
+            } else //Meses com 30 dias
+            if (diaAtual <= DIAS_MES30) {
+                valido = true;
             }
         }
         return valido;
